@@ -156,7 +156,21 @@
 
   // ---------- Init ----------
   function init() {
-    loadSessionData();
+    // Try cloud sync first, fall back to sessionStorage
+    if (typeof CloudSync !== "undefined" && CloudSync.loadFromCloud) {
+      CloudSync.loadFromCloud().then(function () {
+        _postInit();
+      }).catch(function () {
+        loadSessionData();
+        _postInit();
+      });
+    } else {
+      loadSessionData();
+      _postInit();
+    }
+  }
+
+  function _postInit() {
     initTheme();
     populateFilters();
     populateZustFilters();

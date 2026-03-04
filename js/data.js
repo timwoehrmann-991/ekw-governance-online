@@ -464,6 +464,8 @@ function saveSessionData() {
   sessionStorage.setItem("ekw_users", JSON.stringify(USERS));
   sessionStorage.setItem("ekw_teams", JSON.stringify(TEAMS));
   sessionStorage.setItem("ekw_checklist", JSON.stringify(ROLLOUT_CHECKLIST));
+  // Cloud sync (debounced)
+  if (typeof CloudSync !== "undefined" && CloudSync.save) CloudSync.save();
 }
 
 function getPages(space) {
