@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – EKW Governance</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .login-logo img {
+      height: 28px;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 16px 0 4px;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-tertiary);
+      margin-bottom: 28px;
+    }
+
+    .login-form { display: flex; flex-direction: column; gap: 16px; }
+
+    .login-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .login-field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .login-field input {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212,176,57,0.15);
+    }
+
+    .login-btn {
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .login-btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .login-btn-primary:hover { opacity: 0.9; }
+
+    .login-btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .login-switch {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-top: 8px;
+    }
+
+    .login-switch a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .login-switch a:hover { text-decoration: underline; }
+
+    .login-error {
+      background: rgba(220,53,69,0.08);
+      color: #dc3545;
+      border: 1px solid rgba(220,53,69,0.2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .login-success {
+      background: rgba(40,167,69,0.08);
+      color: #28a745;
+      border: 1px solid rgba(40,167,69,0.2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .login-forgot {
+      text-align: right;
+      margin-top: -8px;
+    }
+
+    .login-forgot a {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .login-forgot a:hover { color: var(--accent); }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0;
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+
+    .login-divider::before, .login-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .login-name-field { display: none; }
+    .login-name-field.show { display: flex; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="https://www.haecker-kuechen.com/_assets/0461cac7cf841c14e085cd32e5c0799e/images/logo_black.svg" alt="Häcker Küchen" class="logo-light">
+        <img src="https://www.haecker-kuechen.com/_assets/0461cac7cf841c14e085cd32e5c0799e/images/logo_white.svg" alt="Häcker Küchen" class="logo-dark" style="display:none;">
+      </div>
+      <div class="login-title" id="loginTitle">Anmelden</div>
+      <div class="login-subtitle">EKW Governance Tool</div>
+
+      <div class="login-error" id="loginError"></div>
+      <div class="login-success" id="loginSuccess"></div>
+
+      <form class="login-form" id="loginForm">
+        <div class="login-field login-name-field" id="nameField">
+          <label for="fullName">Vollständiger Name</label>
+          <input type="text" id="fullName" placeholder="Max Mustermann" autocomplete="name">
+        </div>
+        <div class="login-field">
+          <label for="email">E-Mail-Adresse</label>
+          <input type="email" id="email" placeholder="name@haecker.de" required autocomplete="email">
+        </div>
+        <div class="login-field" id="passwordField">
+          <label for="password">Passwort</label>
+          <input type="password" id="password" placeholder="Mindestens 6 Zeichen" required autocomplete="current-password">
+        </div>
+        <div class="login-forgot" id="forgotLink">
+          <a id="forgotBtn">Passwort vergessen?</a>
+        </div>
+        <button type="submit" class="login-btn login-btn-primary" id="submitBtn">Anmelden</button>
+      </form>
+
+      <div class="login-divider">oder</div>
+
+      <div class="login-switch" id="loginSwitch">
+        Noch kein Konto? <a id="switchBtn">Registrieren</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (function () {
+      initSupabase();
+
+      var mode = "login"; // "login" | "register" | "forgot"
+      var form = document.getElementById("loginForm");
+      var emailInput = document.getElementById("email");
+      var passwordInput = document.getElementById("password");
+      var fullNameInput = document.getElementById("fullName");
+      var nameField = document.getElementById("nameField");
+      var passwordField = document.getElementById("passwordField");
+      var forgotLink = document.getElementById("forgotLink");
+      var submitBtn = document.getElementById("submitBtn");
+      var switchBtn = document.getElementById("switchBtn");
+      var loginTitle = document.getElementById("loginTitle");
+      var loginSwitch = document.getElementById("loginSwitch");
+      var errorEl = document.getElementById("loginError");
+      var successEl = document.getElementById("loginSuccess");
+
+      // Check if already authenticated
+      Auth.redirectIfAuthenticated();
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.style.display = "block";
+        successEl.style.display = "none";
+      }
+
+      function showSuccess(msg) {
+        successEl.textContent = msg;
+        successEl.style.display = "block";
+        errorEl.style.display = "none";
+      }
+
+      function clearMessages() {
+        errorEl.style.display = "none";
+        successEl.style.display = "none";
+      }
+
+      function setMode(newMode) {
+        mode = newMode;
+        clearMessages();
+        if (mode === "login") {
+          loginTitle.textContent = "Anmelden";
+          submitBtn.textContent = "Anmelden";
+          nameField.classList.remove("show");
+          passwordField.style.display = "";
+          forgotLink.style.display = "";
+          loginSwitch.innerHTML = 'Noch kein Konto? <a id="switchBtn">Registrieren</a>';
+        } else if (mode === "register") {
+          loginTitle.textContent = "Registrieren";
+          submitBtn.textContent = "Konto erstellen";
+          nameField.classList.add("show");
+          passwordField.style.display = "";
+          forgotLink.style.display = "none";
+          loginSwitch.innerHTML = 'Bereits ein Konto? <a id="switchBtn">Anmelden</a>';
+        } else if (mode === "forgot") {
+          loginTitle.textContent = "Passwort zurücksetzen";
+          submitBtn.textContent = "Link senden";
+          nameField.classList.remove("show");
+          passwordField.style.display = "none";
+          forgotLink.style.display = "none";
+          loginSwitch.innerHTML = 'Zurück zur <a id="switchBtn">Anmeldung</a>';
+        }
+        // Re-bind switch button
+        document.getElementById("switchBtn").addEventListener("click", function () {
+          if (mode === "login") setMode("register");
+          else setMode("login");
+        });
+      }
+
+      switchBtn.addEventListener("click", function () {
+        setMode("register");
+      });
+
+      document.getElementById("forgotBtn").addEventListener("click", function () {
+        setMode("forgot");
+      });
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        clearMessages();
+        submitBtn.disabled = true;
+
+        var email = emailInput.value.trim();
+        var password = passwordInput.value;
+        var fullName = fullNameInput.value.trim();
+
+        try {
+          if (mode === "login") {
+            await Auth.login(email, password);
+            window.location.href = "index.html";
+          } else if (mode === "register") {
+            if (password.length < 6) {
+              showError("Passwort muss mindestens 6 Zeichen lang sein.");
+              submitBtn.disabled = false;
+              return;
+            }
+            var data = await Auth.register(email, password, fullName);
+            if (data.user && !data.user.confirmed_at && data.user.identities && data.user.identities.length === 0) {
+              showError("Diese E-Mail-Adresse ist bereits registriert.");
+            } else if (data.session) {
+              // Auto-confirmed (e.g. if email confirmation is disabled)
+              window.location.href = "index.html";
+            } else {
+              showSuccess("Bestätigungslink wurde an " + email + " gesendet. Bitte prüfen Sie Ihr Postfach.");
+            }
+          } else if (mode === "forgot") {
+            await Auth.resetPassword(email);
+            showSuccess("Wiederherstellungslink wurde an " + email + " gesendet.");
+          }
+        } catch (err) {
+          var msg = err.message || "Ein Fehler ist aufgetreten.";
+          if (msg === "Invalid login credentials") msg = "Ungültige Anmeldedaten.";
+          if (msg === "Email not confirmed") msg = "Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse.";
+          if (msg.includes("User already registered")) msg = "Diese E-Mail-Adresse ist bereits registriert.";
+          showError(msg);
+        }
+        submitBtn.disabled = false;
+      });
+
+      // Dark mode detection
+      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.setAttribute("data-theme", "dark");
+        var lightLogos = document.querySelectorAll(".logo-light");
+        var darkLogos = document.querySelectorAll(".logo-dark");
+        lightLogos.forEach(function(el) { el.style.display = "none"; });
+        darkLogos.forEach(function(el) { el.style.display = ""; });
+      }
+    })();
+  </script>
+</body>
+</html>

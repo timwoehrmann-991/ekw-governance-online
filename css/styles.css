@@ -2190,6 +2190,27 @@ body {
   transform: translateY(-1px);
 }
 
+.header-btn-logout {
+  background: transparent;
+  border-color: rgba(220,53,69,0.3);
+  color: #dc3545;
+  font-size: 12px;
+  padding: 5px 12px;
+}
+.header-btn-logout:hover {
+  background: #dc3545;
+  color: #fff;
+  border-color: #dc3545;
+  box-shadow: 0 4px 16px rgba(220,53,69,0.3);
+}
+
+.current-user-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-right: 4px;
+}
+
 /* ---------- Zeitplan Zoom Toggle (legacy, kept for compat) ---------- */
 .zeitplan-zoom-toggle {
   display: flex;

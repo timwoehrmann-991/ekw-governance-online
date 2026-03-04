@@ -682,6 +682,14 @@
       });
     });
 
+    // Logout button
+    var logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", function() {
+        if (typeof Auth !== "undefined") Auth.logout();
+      });
+    }
+
     // Theme toggle: 3-way cycle
     themeToggle.addEventListener("click", function() {
       var current = document.documentElement.getAttribute("data-theme") || "light";

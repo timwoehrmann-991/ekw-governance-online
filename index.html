@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" style="display:none;">
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
@@ -20,6 +20,8 @@
       </div>
       <div class="header-right">
         <button class="header-btn" id="userMgmtBtn" title="Nutzerverwaltung">&#9775; Nutzer</button>
+        <span class="current-user-name" id="currentUserName"></span>
+        <button class="header-btn header-btn-logout" id="logoutBtn" title="Abmelden">Abmelden</button>
         <span class="theme-label" id="themeLabel">Light</span>
         <button class="theme-toggle" id="themeToggle" title="Design wechseln">
           <span class="theme-icon-light">&#9788;</span>
@@ -340,6 +342,28 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Auth guard – block app until authenticated
+    (function() {
+      initSupabase();
+      Auth.getSession().then(function(session) {
+        if (!session) {
+          window.location.href = "login.html";
+        } else {
+          // Show the app and load scripts
+          document.querySelector(".app-shell").style.display = "";
+          // Update user display
+          Auth.getUser().then(function(user) {
+            var el = document.getElementById("currentUserName");
+            if (el && user) el.textContent = Auth.getDisplayName(user);
+          });
+        }
+      });
+    })();
+  </script>
   <script src="js/data.js"></script>
   <script src="js/governance.js"></script>
   <script src="js/render.js"></script>
