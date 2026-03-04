@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confluence EK-Wikipedia Governance</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <img src="https://www.haecker-kuechen.com/_assets/0461cac7cf841c14e085cd32e5c0799e/images/logo_black.svg" alt="Häcker Küchen" class="header-logo logo-light">
+        <img src="https://www.haecker-kuechen.com/_assets/0461cac7cf841c14e085cd32e5c0799e/images/logo_white.svg" alt="Häcker Küchen" class="header-logo logo-dark">
+        <div class="header-divider"></div>
+        <div class="header-text">
+          <h1 class="app-title">Confluence EK-Wikipedia Governance</h1>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="header-btn" id="userMgmtBtn" title="Nutzerverwaltung">&#9775; Nutzer</button>
+        <span class="theme-label" id="themeLabel">Light</span>
+        <button class="theme-toggle" id="themeToggle" title="Design wechseln">
+          <span class="theme-icon-light">&#9788;</span>
+          <span class="theme-icon-beige">&#9752;</span>
+          <span class="theme-icon-dark">&#9790;</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="tree">Strukturbaum</button>
+      <button class="tab-btn" data-tab="table">Tabellenansicht</button>
+      <button class="tab-btn" data-tab="governance">Governance-Check</button>
+      <button class="tab-btn" data-tab="compare">Vergleich EKW / EKW2</button>
+      <button class="tab-btn" data-tab="zeitplan">Roll-Out Zeitplan</button>
+      <button class="tab-btn" data-tab="zustaendigkeiten">Zuständigkeiten</button>
+    </nav>
+
+    <!-- Space Switcher (Tab 1 & 2) -->
+    <div class="space-switcher" id="spaceSwitcher">
+      <button class="space-btn active" data-space="ekw">EK-Wikipedia</button>
+      <button class="space-btn" data-space="ekw2">EK-Wikipedia 2.0</button>
+    </div>
+
+    <!-- Tab Content -->
+    <main class="tab-content">
+      <!-- Tab 1: Strukturbaum -->
+      <section class="tab-panel active" id="panel-tree">
+        <div class="tree-container" id="treeContainer"></div>
+      </section>
+
+      <!-- Tab 2: Tabellenansicht -->
+      <section class="tab-panel" id="panel-table">
+        <div class="table-toolbar">
+          <div class="filter-group">
+            <select id="filterBereich" class="filter-select">
+              <option value="">Alle Bereiche</option>
+            </select>
+            <select id="filterType" class="filter-select">
+              <option value="">Alle Seitentypen</option>
+            </select>
+            <select id="filterStatus" class="filter-select">
+              <option value="">Alle Status</option>
+            </select>
+            <select id="filterMigration" class="filter-select">
+              <option value="">Alle Migrationen</option>
+            </select>
+          </div>
+          <div class="export-group">
+            <button class="btn btn-secondary" id="exportCsvBtn">CSV</button>
+            <button class="btn btn-secondary" id="exportPdfBtn">PDF</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table" id="dataTable">
+            <thead>
+              <tr>
+                <th data-sort="title">Titel <span class="sort-icon"></span></th>
+                <th data-sort="depth">Ebene <span class="sort-icon"></span></th>
+                <th data-sort="pageType">Seitentyp <span class="sort-icon"></span></th>
+                <th data-sort="status">Status <span class="sort-icon"></span></th>
+                <th data-sort="owner">Owner <span class="sort-icon"></span></th>
+                <th data-sort="lastUpdated">Aktualisiert <span class="sort-icon"></span></th>
+                <th data-sort="versionCount">Versionen <span class="sort-icon"></span></th>
+                <th data-sort="migration">Migration <span class="sort-icon"></span></th>
+                <th>Betrachter</th>
+                <th>Bearbeiter</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tab 3: Governance-Check -->
+      <section class="tab-panel" id="panel-governance">
+        <div class="governance-header">
+          <h2>Governance-Check</h2>
+          <div class="governance-actions">
+            <div class="governance-stats" id="govStats"></div>
+            <button class="btn btn-secondary btn-small" id="exportGovCsvBtn">CSV</button>
+            <button class="btn btn-secondary btn-small" id="exportGovPdfBtn">PDF</button>
+          </div>
+        </div>
+        <div class="governance-results" id="govResults"></div>
+      </section>
+
+      <!-- Tab 4: Vergleich -->
+      <section class="tab-panel" id="panel-compare">
+        <div class="compare-toolbar">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div class="sub-tab-nav">
+              <button class="sub-tab-btn active" data-compare-view="pages">Seiten</button>
+              <button class="sub-tab-btn" data-compare-view="processes">Prozesse</button>
+            </div>
+            <div class="compare-legend" id="compareLegend">
+              <span class="legend-item"><span class="legend-dot legend-both"></span> In beiden</span>
+              <span class="legend-item"><span class="legend-dot legend-ekw"></span> Nur EKW</span>
+              <span class="legend-item"><span class="legend-dot legend-ekw2"></span> Nur EKW2</span>
+            </div>
+            <label class="compare-diff-toggle" id="compareDiffToggle">
+              <input type="checkbox" id="compareOnlyDiffs"> Nur Unterschiede
+            </label>
+          </div>
+          <div class="export-group">
+            <button class="btn btn-secondary" id="exportCompareBtn">CSV</button>
+            <button class="btn btn-secondary" id="exportComparePdfBtn">PDF</button>
+          </div>
+        </div>
+        <!-- Pages comparison (50/50 split) -->
+        <div id="comparePageContainer" class="compare-container"></div>
+        <!-- Process comparison -->
+        <div id="compareProcessContainer" class="process-compare-container" style="display:none;"></div>
+      </section>
+
+      <!-- Tab 6: Zuständigkeiten -->
+      <section class="tab-panel" id="panel-zustaendigkeiten">
+        <div class="zustaendigkeiten-toolbar">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div class="sub-tab-nav">
+              <button class="sub-tab-btn active" data-zust-view="person">Nach Person</button>
+              <button class="sub-tab-btn" data-zust-view="page">Nach Seite</button>
+              <button class="sub-tab-btn" data-zust-view="distribution">Verteilung</button>
+            </div>
+            <select id="zustFilterSpace" class="filter-select">
+              <option value="">Alle Spaces</option>
+              <option value="ekw">EK-Wikipedia</option>
+              <option value="ekw2">EK-Wikipedia 2.0</option>
+            </select>
+            <select id="zustFilterBereich" class="filter-select">
+              <option value="">Alle Bereiche</option>
+            </select>
+            <input type="text" id="zustFilterPerson" class="filter-input" placeholder="Person suchen...">
+          </div>
+          <div class="export-group">
+            <button class="btn btn-secondary btn-small" id="exportZustCsvBtn">CSV</button>
+            <button class="btn btn-secondary btn-small" id="exportZustPdfBtn">PDF</button>
+          </div>
+        </div>
+        <div id="zustaendigkeitenContainer"></div>
+      </section>
+
+      <!-- Tab 5: Roll-Out Zeitplan -->
+      <section class="tab-panel" id="panel-zeitplan">
+        <div class="zeitplan-toolbar">
+          <div class="zeitplan-filters">
+            <select id="zeitplanFilterSpace" class="filter-select">
+              <option value="">Alle Spaces</option>
+              <option value="ekw">EK-Wikipedia</option>
+              <option value="ekw2">EK-Wikipedia 2.0</option>
+            </select>
+            <select id="zeitplanFilterBereich" class="filter-select">
+              <option value="">Alle Bereiche</option>
+            </select>
+            <select id="zeitplanFilterStatus" class="filter-select">
+              <option value="">Alle Status</option>
+            </select>
+            <div class="zeitplan-quarter-btns" id="zeitplanQuarterBtns"></div>
+            <div class="zeitplan-range-selector">
+              <label class="zeitplan-range-label">Von</label>
+              <select id="zeitplanRangeFromMonth" class="filter-select filter-select-sm"></select>
+              <select id="zeitplanRangeFromYear" class="filter-select filter-select-sm"></select>
+              <label class="zeitplan-range-label">Bis</label>
+              <select id="zeitplanRangeToMonth" class="filter-select filter-select-sm"></select>
+              <select id="zeitplanRangeToYear" class="filter-select filter-select-sm"></select>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="zeitplan-view-toggle">
+              <button class="zeitplan-view-btn active" data-zview="timeline">Zeitleiste</button>
+              <button class="zeitplan-view-btn" data-zview="list">Liste</button>
+              <button class="zeitplan-view-btn" data-zview="checkliste">Checkliste</button>
+            </div>
+            <button class="btn btn-primary btn-small" id="addRolloutBtn">+ Rollout</button>
+            <div class="export-group">
+              <button class="btn btn-secondary btn-small" id="exportZeitplanCsvBtn">CSV</button>
+              <button class="btn btn-secondary btn-small" id="exportZeitplanPdfBtn">PDF</button>
+            </div>
+          </div>
+        </div>
+        <div id="zeitplanContainer"></div>
+      </section>
+    </main>
+
+    <!-- Side Panel -->
+    <div class="side-panel-overlay" id="sidePanelOverlay"></div>
+    <aside class="side-panel" id="sidePanel">
+      <div class="side-panel-header">
+        <h3 id="sidePanelTitle">Seitendetails</h3>
+        <button class="side-panel-close" id="sidePanelClose">&times;</button>
+      </div>
+      <div class="side-panel-body" id="sidePanelBody"></div>
+    </aside>
+
+    <!-- Add Page Modal -->
+    <div class="modal-overlay" id="addPageOverlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="addPageModalTitle">Neue Seite hinzufügen</h3>
+          <button class="modal-close" id="addPageModalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="panel-field">
+            <div class="panel-field-label">Titel *</div>
+            <input class="panel-input" id="newPageTitle" type="text" placeholder="Seitenname">
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Seitentyp</div>
+            <select class="panel-select" id="newPageType"></select>
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Status</div>
+            <select class="panel-select" id="newPageStatus"></select>
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Owner</div>
+            <select class="panel-select" id="newPageOwner"></select>
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Migration</div>
+            <select class="panel-select" id="newPageMigration"></select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="addPageCancel">Abbrechen</button>
+          <button class="btn btn-primary" id="addPageSave">Erstellen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deletePageOverlay">
+      <div class="modal modal-small">
+        <div class="modal-header">
+          <h3>Seite löschen</h3>
+        </div>
+        <div class="modal-body">
+          <p id="deletePageMessage">Möchten Sie diese Seite wirklich löschen?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="deletePageCancel">Abbrechen</button>
+          <button class="btn btn-danger" id="deletePageConfirm">Löschen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Management Modal -->
+    <div class="modal-overlay" id="userMgmtOverlay">
+      <div class="modal modal-wide">
+        <div class="modal-header">
+          <h3>Nutzerverwaltung</h3>
+          <button class="modal-close" id="userMgmtClose">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="user-mgmt-list" id="userMgmtList"></div>
+          <div class="user-mgmt-add">
+            <input class="panel-input" id="newUserName" type="text" placeholder="Name">
+            <select class="panel-select" id="newUserTeam" style="min-width:120px"></select>
+            <button class="btn btn-primary btn-small" id="addUserBtn">+ Nutzer</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="userMgmtDone">Fertig</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Rollout Modal -->
+    <div class="modal-overlay" id="addRolloutOverlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="rolloutModalTitle">Rollout-Eintrag erstellen</h3>
+          <button class="modal-close" id="rolloutModalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="panel-field">
+            <div class="panel-field-label">Seite *</div>
+            <select class="panel-select" id="rolloutPage"></select>
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Ziel-Space</div>
+            <select class="panel-select" id="rolloutSpace">
+              <option value="ekw">EK-Wikipedia</option>
+              <option value="ekw2">EK-Wikipedia 2.0</option>
+            </select>
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Startdatum</div>
+            <input class="panel-input" id="rolloutStart" type="date">
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Enddatum</div>
+            <input class="panel-input" id="rolloutEnd" type="date">
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Status</div>
+            <select class="panel-select" id="rolloutStatus"></select>
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Verantwortlich</div>
+            <select class="panel-select" id="rolloutResponsible"></select>
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Feedback-Datum</div>
+            <input class="panel-input" id="rolloutFeedbackDate" type="date">
+          </div>
+          <div class="panel-field">
+            <div class="panel-field-label">Feedback-Notizen</div>
+            <textarea class="panel-textarea" id="rolloutFeedbackNotes" placeholder="Feedback-Beschreibung"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="rolloutCancel">Abbrechen</button>
+          <button class="btn btn-primary" id="rolloutSave">Erstellen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/governance.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
